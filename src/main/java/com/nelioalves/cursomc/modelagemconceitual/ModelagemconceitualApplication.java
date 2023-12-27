@@ -2,6 +2,8 @@ package com.nelioalves.cursomc.modelagemconceitual;
 
 
 
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +16,20 @@ import com.nelioalves.cursomc.modelagemconceitual.domain.Cidade;
 import com.nelioalves.cursomc.modelagemconceitual.domain.Cliente;
 import com.nelioalves.cursomc.modelagemconceitual.domain.Endereco;
 import com.nelioalves.cursomc.modelagemconceitual.domain.Estado;
+import com.nelioalves.cursomc.modelagemconceitual.domain.Pagamento;
+import com.nelioalves.cursomc.modelagemconceitual.domain.PagamentoComBoleto;
+import com.nelioalves.cursomc.modelagemconceitual.domain.PagamentoComCartao;
+import com.nelioalves.cursomc.modelagemconceitual.domain.Pedido;
 import com.nelioalves.cursomc.modelagemconceitual.domain.Produto;
+import com.nelioalves.cursomc.modelagemconceitual.domain.enuns.EstadoPagamento;
 import com.nelioalves.cursomc.modelagemconceitual.domain.enuns.TipoCliente;
 import com.nelioalves.cursomc.modelagemconceitual.repositories.CategoriaRepository;
 import com.nelioalves.cursomc.modelagemconceitual.repositories.CidadeRepository;
 import com.nelioalves.cursomc.modelagemconceitual.repositories.ClienteRepository;
 import com.nelioalves.cursomc.modelagemconceitual.repositories.EnderecoRepository;
 import com.nelioalves.cursomc.modelagemconceitual.repositories.EstadoRepository;
+import com.nelioalves.cursomc.modelagemconceitual.repositories.PagamentoRepository;
+import com.nelioalves.cursomc.modelagemconceitual.repositories.PedidoRepository;
 import com.nelioalves.cursomc.modelagemconceitual.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -43,6 +52,12 @@ public class ModelagemconceitualApplication implements CommandLineRunner{
 	
 	@Autowired
 	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	
 	public static void main(String[] args) {
@@ -95,8 +110,25 @@ public class ModelagemconceitualApplication implements CommandLineRunner{
 		enderecoRepository.saveAll(Arrays.asList(e1,e2));
 		
 		
-	
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 		
-	}
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cl1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cl1, e2);
+		
+		cl1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		
+		ped2.setPagamento(pagto2);
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+
+		
+}
 
 }
