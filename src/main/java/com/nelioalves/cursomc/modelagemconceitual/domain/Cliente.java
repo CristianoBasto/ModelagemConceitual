@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nelioalves.cursomc.modelagemconceitual.domain.enuns.TipoCliente;
 
 import jakarta.persistence.CollectionTable;
@@ -42,6 +42,7 @@ public class Cliente implements Serializable{
 	private Set<String> telefones = new HashSet<>();
 
 	
+	@JsonBackReference
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos =  new ArrayList<>();
 	

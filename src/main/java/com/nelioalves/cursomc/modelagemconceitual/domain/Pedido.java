@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,10 +33,11 @@ public class Pedido implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date instante;
 	
+	@JsonManagedReference
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
 	private Pagamento pagamento;
 	
-    
+	@JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "cliente_id")
 	private Cliente cliente;
@@ -43,6 +46,7 @@ public class Pedido implements Serializable{
     @JoinColumn(name = "endereco_id")
 	private Endereco enderecoDeEntrega;
 	
+    @JsonManagedReference
     @OneToMany(mappedBy = "id.pedido")
     private Set<ItemPedido> itens =  new HashSet<>();
     
